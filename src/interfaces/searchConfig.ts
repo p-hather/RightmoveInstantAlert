@@ -1,7 +1,7 @@
 export interface searchConfig {
     area: {
-        regionCode: string | undefined,
-        radius: number | undefined
+        regionCode: string,
+        radius: number
     },
     parameters: {
         searchType: string | undefined,
