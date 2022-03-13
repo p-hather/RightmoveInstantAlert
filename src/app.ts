@@ -7,9 +7,11 @@ import cheerio from 'cheerio';
 
 export class RightmoveInstantAlert {
     configFP: string;
+    properties: string[]
 
     constructor(configFP: string = './config.yaml') {
         this.configFP = configFP;
+        this.properties = [];
     }
 
     async getConfig() {
@@ -48,7 +50,12 @@ export class RightmoveInstantAlert {
         const site = await axiosClient.get(searchURL);
         const html = site.data;
         const $ = cheerio.load(html);
-        var pageProperties = $('div[data-test^="propertyCard-"]').get().map(x => $(x).attr('id')); // exclude property-0
+        var pageProperties = $('div[data-test^="propertyCard-"]')
+                                .not('div[data-test="propertyCard-0"]')  // exclude featured property (0)
+                                .get()
+                                .map(x => $(x)
+                                .attr('id')!
+                                .match('property-(.*)')![1]);
         console.log(pageProperties);
     }
 }
