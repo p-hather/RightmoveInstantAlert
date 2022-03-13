@@ -14,11 +14,9 @@ function sleep(ms: number) {
 export class RightmoveInstantAlert {
     configFP: string;
     searchURL?: string;
-    properties: string[];
 
     constructor(configFP: string = './config.yaml') {
         this.configFP = configFP;
-        this.properties = [];
     }
 
     async getConfig() {
