@@ -5,9 +5,16 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 
 
+function sleep(ms: number) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+}
+
 export class RightmoveInstantAlert {
     configFP: string;
-    properties: string[]
+    searchURL?: string;
+    properties: string[];
 
     constructor(configFP: string = './config.yaml') {
         this.configFP = configFP;
@@ -41,24 +48,39 @@ export class RightmoveInstantAlert {
         const paramsFiltered = params.filter(param => param != null);  // Remove null values
         const searchURL = `${baseURL}${paramsFiltered.join('&')}`;
         console.log(`URL to search is: ${searchURL}`);
-        return searchURL
+        return searchURL;
     }
 
-    async scrapeRightmove() {
-        const searchURL = await this.buildURL();
+    async getProperties(searchURL: string) {
         const axiosClient = axios.create();
         const site = await axiosClient.get(searchURL);
         const html = site.data;
         const $ = cheerio.load(html);
-        var pageProperties = $('div[data-test^="propertyCard-"]')
-                                .not('div[data-test="propertyCard-0"]')  // exclude featured property (0)
-                                .get()
-                                .map(x => $(x)
-                                .attr('id')!
-                                .match('property-(.*)')![1]);
-        console.log(pageProperties);
+        var pageProperties: string[] = $('div[data-test^="propertyCard-"]')
+                                        .not('div[data-test="propertyCard-0"]')  // exclude featured property (0)
+                                        .get()
+                                        .map(x => $(x)
+                                        .attr('id')!
+                                        .match('property-(.*)')![1]);
+        return pageProperties;
+    }
+
+    async runProcess() {
+        this.searchURL = await this.buildURL();
+        let propertiesA = await this.getProperties(this.searchURL);
+        console.log('Beginning search...')
+        while(true) {
+            await sleep(30000);
+            let propertiesB = await this.getProperties(this.searchURL);
+            let newProperties: string[] = propertiesB.filter(x => !propertiesA.includes(x));
+            if (newProperties.length > 0) {
+                console.log(`${newProperties.length} new properties detected`);
+                console.log(newProperties);
+            }
+            propertiesA = propertiesB;
+        }
     }
 }
 
 const ria = new RightmoveInstantAlert();
-ria.scrapeRightmove();
+ria.runProcess();
