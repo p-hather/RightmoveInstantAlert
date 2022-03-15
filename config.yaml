@@ -2,15 +2,13 @@ area:
   regionCode: '5E61480'
   radius: 0.0
 parameters:
-  minPrice: 50000
+  minPrice:
   maxPrice: 260000
   minBedrooms: 1
   maxBedrooms:
   maxDaysSinceAdded:
-  onlyAuction: false
-  includeSSTC: false
+  onlyAuction:
+  includeSSTC:
   dontShow:
-    - newHome
-    - retirement
-    - sharedOwnership
+    retirement
   mustHave:
