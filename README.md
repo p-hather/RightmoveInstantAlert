@@ -4,7 +4,7 @@
 
 Rightmove Instant Alert is a Node.js app written in Typescript that sends an (almost) instant alert to a Discord channel of your choice when a new property is detected that matches your custom search parameters.
 
-## Why?
+### Why?
 
 In some places, finding suitable properties is incredibly competitive. Rightmove's native email alert tool is far from instant - even when set at this level. Rightmove Instant Alert provides a much faster way to be notified of new property listings - therefore, a better chance of securing a viewing.
 
