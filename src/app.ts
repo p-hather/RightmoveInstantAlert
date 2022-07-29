@@ -87,12 +87,7 @@ export class RightmoveInstantAlert {
         }
     }
 
-    async compileMessage(properties: string[], searchURL: string) {
-        let suffix = 'y'
-        if (properties.length > 1) {
-            suffix = 'ies'
-        }
-        await this.sendMessage(`:house_with_garden: ${properties.length} new propert${suffix} detected on [search](${searchURL})`)
+    async compileMessage(properties: string[]) {
         for (let property of properties) {
             var propertyLink = `https://www.rightmove.co.uk/properties/${property}`
             await this.sendMessage(`[](${propertyLink})`)
@@ -104,12 +99,12 @@ export class RightmoveInstantAlert {
         let propertiesA = await this.getProperties(this.searchURL);
         console.log('Beginning search...')
         while(true) {
-            await sleep(30000);  // todo make this variable
+            await sleep(30000);  // TODO make this configurable
             let propertiesB = await this.getProperties(this.searchURL);
             let newProperties: string[] = propertiesB.filter(x => !propertiesA.includes(x));
             if (newProperties.length > 0) {
                 console.log(`${newProperties.length} new properties detected`);
-                this.compileMessage(newProperties, this.searchURL);
+                this.compileMessage(newProperties);
             }
             propertiesA = propertiesB;
         }
